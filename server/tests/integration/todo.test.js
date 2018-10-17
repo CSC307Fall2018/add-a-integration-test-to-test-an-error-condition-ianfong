@@ -33,8 +33,31 @@ describe('/todos', () => {
         });
       });
     });
+    it('should return an error because item isnt there', () => {
+      return request(app)
+        .get('/nothere')
+        .expect(404)
+    });
   });
-
+  describe('DELETE /', () => {
+    it('item to delete not present', () => {
+      return request(app)
+        .delete('/nonexistant')
+        .expect(404)
+    });
+    it('delete an item immediately after creation', () => {
+      return ToDo.create({
+        subject: 'test',
+      }).then(() => {
+        return request(app).get(rootPath).expect((response) => {
+          return expect(response.body.todos.length).toEqual(1);
+        });
+      });
+    });
+    return request(app)
+      .delete(rootPath + '/test')
+      .expect(204)
+  });
   describe('POST /', () => {
     it('should create one todo item', () => {
       return request(app)
