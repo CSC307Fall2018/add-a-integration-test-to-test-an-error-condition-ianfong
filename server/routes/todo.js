@@ -35,7 +35,11 @@ router.route('/:id')
   // get a specific todo
   .get((req, res) => {
     ToDo.findById(req.params.id).then((todo) => {
-      res.json(todo);
+      if (todo) {
+        res.json(todo);
+      } else {
+        res.send(404);
+      }
     });
   })
 
@@ -56,9 +60,13 @@ router.route('/:id')
   .delete((req, res) => {
     const idToDelete = req.params.id;
     ToDo.findById(idToDelete).then((todo) => {
-      todo.destroy().then(() => {
-        res.json({ delete: true });
-      });
+      if (todo) {
+        todo.destroy().then(() => {
+          res.json({ delete: true });
+        });
+      } else {
+        res.send(404);
+      }
     });
   });
 
